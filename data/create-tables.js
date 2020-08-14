@@ -16,7 +16,8 @@ async function run() {
                     id SERIAL PRIMARY KEY NOT NULL,
                     name VARCHAR(512) NOT NULL,
                     number_of_eggs INTEGER NOT NULL,
-                    flies INTEGER NOT NULL REFERENCES users(id)
+                    flies BOOLEAN NOT NULL,
+                    color VARCHAR(512) NOT NULL
             );
         `);
 

@@ -13,14 +13,13 @@ async function run() {
     const birds = await Promise.all(
       birdsData.map(bird => {
         return client.query(`
-                      INSERT INTO birds (name, number_of_eggs, flies, title)
-                      VALUES ($1, $2, $3, $4);
+                      INSERT INTO birds (name, number_of_eggs, flies, color)
+                      VALUES ($1, $2, $3, $4)
+                      RETURNING *;
                   `,
-          [bird.name, bird.number_of_eggs, bird.flies, bird.title]);
+          [bird.name, bird.number_of_eggs, bird.flies, bird.color]);
       })
     );
-
-    const bird = birds[0].rows[0];
 
     console.log('seed data load complete', getEmoji(), getEmoji(), getEmoji());
   }
