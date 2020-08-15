@@ -1,6 +1,8 @@
 const client = require('../lib/client');
 // import our seed data:
-const birdsData = require('./birds.js');
+const birds = require('./birds.js');
+const usersData = require('./users.js');
+const rescuesData = require('./rescues.js');
 const { getEmoji } = require('../lib/emoji.js');
 
 run();
@@ -10,16 +12,37 @@ async function run() {
   try {
     await client.connect();
 
-    const birds = await Promise.all(
-      birdsData.map(bird => {
+    const users = await Promise.all(
+      usersData.map(user => {
         return client.query(`
-                      INSERT INTO birds (name, number_of_eggs, flies, color)
-                      VALUES ($1, $2, $3, $4)
+                      INSERT INTO users (email, hash)
+                      VALUES ($1, $2)
                       RETURNING *;
-                  `,
-          [bird.name, bird.number_of_eggs, bird.flies, bird.color]);
+                      `, [user.email, user.hash]);
       })
     );
+
+    const user = users[0].rows[0];
+
+    await Promise.all(
+      rescuesData.map(rescue => {
+        return client.query(`
+          INSERT INTO rescues (name)
+          VALUES ($1);
+          `, [rescue.name]);
+      })
+    );
+
+    await Promise.all(
+      birds.map(bird => {
+        return client.query(`
+          INSERT INTO birds(name, number_of_eggs, flies, color, rescue_id)
+          VALUES($1, $2, $3, $4, $5)
+          RETURNING *;
+        `, [bird.name, bird.number_of_eggs, bird.flies, bird.color, bird.rescue_id]);
+      })
+    );
+
 
     console.log('seed data load complete', getEmoji(), getEmoji(), getEmoji());
   }
