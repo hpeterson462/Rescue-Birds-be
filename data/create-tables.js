@@ -19,7 +19,7 @@ async function run() {
                 );
                 CREATE TABLE rescues (
                   id SERIAL PRIMARY KEY NOT NULL,
-                  name VARCHAR(256) NOT NULL
+                  rescue_name VARCHAR(256) NOT NULL
                 );
                  CREATE TABLE birds (
                     id SERIAL PRIMARY KEY NOT NULL,

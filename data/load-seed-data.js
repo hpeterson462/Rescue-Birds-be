@@ -27,17 +27,18 @@ async function run() {
     await Promise.all(
       rescuesData.map(rescue => {
         return client.query(`
-          INSERT INTO rescues (name)
-          VALUES ($1);
-          `, [rescue.name]);
+          INSERT INTO rescues (rescue_name)
+          VALUES ($1)
+          RETURNING *;
+          `, [rescue.rescue_name]);
       })
     );
 
     await Promise.all(
       birds.map(bird => {
         return client.query(`
-          INSERT INTO birds(name, number_of_eggs, flies, color, rescue_id)
-          VALUES($1, $2, $3, $4, $5)
+          INSERT INTO birds (name, number_of_eggs, flies, color, rescue_id)
+          VALUES ($1, $2, $3, $4, $5)
           RETURNING *;
         `, [bird.name, bird.number_of_eggs, bird.flies, bird.color, bird.rescue_id]);
       })
